@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>你的数字幽灵 | Build Your Ghost</title>
+  <style>
+    :root{--bg:#060606;--panel:#111;--line:rgba(255,255,255,.18);--text:#f7f7f7;--muted:rgba(255,255,255,.72);--soft:rgba(255,255,255,.08)}
+    *{box-sizing:border-box}html,body{margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Segoe UI",sans-serif;background:radial-gradient(circle at top,#1b1b1b 0,#0d0d0d 38%,#050505 100%);color:var(--text);min-height:100vh;overflow-x:hidden}
+    body:before,body:after{content:"";position:fixed;inset:auto;pointer-events:none;border-radius:999px;filter:blur(16px);opacity:.8}
+    body:before{width:210px;height:210px;left:8%;top:12%;background:radial-gradient(circle,rgba(255,255,255,.24),transparent 66%)}
+    body:after{width:280px;height:280px;right:8%;bottom:10%;background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%)}
+    .stars,.stars:before,.stars:after{position:fixed;inset:0;content:"";pointer-events:none;background-image:radial-gradient(circle at 20% 30%,rgba(255,255,255,.85) 0 1px,transparent 1.4px),radial-gradient(circle at 72% 22%,rgba(255,255,255,.55) 0 1px,transparent 1.4px),radial-gradient(circle at 40% 74%,rgba(255,255,255,.55) 0 1px,transparent 1.4px),radial-gradient(circle at 84% 68%,rgba(255,255,255,.35) 0 1px,transparent 1.6px)}
+    .stars:before{opacity:.45;transform:scale(1.2)}.stars:after{opacity:.3;transform:scale(.9)}
+    .shell{position:relative;z-index:1;max-width:1160px;margin:0 auto;padding:24px 20px 56px}
+    nav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:28px}
+    .brand{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+    .nav-links{display:flex;gap:10px;flex-wrap:wrap}.nav-links a{text-decoration:none;color:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.04)}
+    .hero{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;align-items:center}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:28px;backdrop-filter:blur(16px);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+    .copy{padding:34px}.eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}h1{margin:14px 0 10px;font-size:clamp(2.6rem,7vw,5rem);line-height:.98}h1 span{display:block;font-size:clamp(1.3rem,3vw,2.05rem);letter-spacing:.18em;margin-top:12px;color:rgba(255,255,255,.76)}
+    .lead{font-size:1.06rem;line-height:1.8;color:rgba(255,255,255,.82);max-width:35rem}.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.btn{text-decoration:none;border-radius:999px;padding:14px 22px;font-weight:700;transition:.25s ease}.btn.primary{background:#fff;color:#050505;box-shadow:0 0 24px rgba(255,255,255,.18)}.btn.secondary{color:#fff;border:1px solid var(--line);background:rgba(255,255,255,.04)}.btn:hover{transform:translateY(-2px)}
+    .scene{position:relative;min-height:600px;padding:20px;display:flex;align-items:center;justify-content:center}
+    .orb-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    .orb{width:min(40vw,250px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 32%,#fff 0,rgba(255,255,255,.94) 18%,rgba(255,255,255,.28) 52%,rgba(255,255,255,.08) 72%,transparent 78%);box-shadow:0 0 56px rgba(255,255,255,.26),0 0 130px rgba(255,255,255,.18);animation:breathe 4.6s ease-in-out infinite}
+    .ring{position:absolute;border:1px solid rgba(255,255,255,.16);border-radius:50%;animation:pulse 5s ease-in-out infinite}.ring.r1{width:310px;height:310px}.ring.r2{width:420px;height:420px;animation-delay:-1.6s}.ring.r3{width:530px;height:530px;animation-delay:-3.1s}
+    .fragment{position:absolute;max-width:160px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);border-radius:16px;color:#f2f2f2;font-size:.88rem;line-height:1.55;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:float 6s ease-in-out infinite}
+    .f1{top:16%;left:8%}.f2{top:20%;right:11%;animation-delay:-1.3s}.f3{bottom:16%;left:11%;animation-delay:-2.2s}.f4{bottom:15%;right:9%;animation-delay:-3.1s}
+    .journal{margin-top:30px;padding:26px}.journal h2{margin:0 0 8px;font-size:1.4rem}.journal p{margin:0 0 18px;color:var(--muted);line-height:1.7}.input-row{display:flex;gap:12px;flex-wrap:wrap}.input-row input{flex:1;min-width:220px;border-radius:18px;border:1px solid var(--line);background:rgba(255,255,255,.05);color:#fff;padding:16px 18px;font-size:1rem;outline:none}.input-row button{border:0;border-radius:18px;background:#fff;color:#050505;padding:16px 20px;font-weight:800;cursor:pointer}.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.note{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:18px;padding:14px 14px 16px;min-height:104px}.note small{display:block;color:rgba(255,255,255,.5);margin-bottom:8px;letter-spacing:.12em;text-transform:uppercase}.note span{display:block;line-height:1.7;color:#f5f5f5}
+    .foot{margin-top:18px;color:rgba(255,255,255,.62);font-size:.94rem}
+    @keyframes breathe{0%,100%{transform:scale(.96);opacity:.92}50%{transform:scale(1.04);opacity:1}}@keyframes pulse{0%,100%{transform:scale(.95);opacity:.3}50%{transform:scale(1.02);opacity:.62}}@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-12px) rotate(1deg)}}
+    @media (max-width: 900px){.hero{grid-template-columns:1fr}.scene{min-height:420px}.ring.r1{width:230px;height:230px}.ring.r2{width:320px;height:320px}.ring.r3{width:410px;height:410px}.fragment{position:relative;top:auto;left:auto;right:auto;bottom:auto;max-width:none}.scene{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end}.orb-wrap{grid-column:1/-1;position:relative;min-height:260px}.notes{grid-template-columns:1fr}}@media (max-width: 640px){nav{flex-direction:column;align-items:flex-start}.copy,.journal{padding:22px}.scene{grid-template-columns:1fr}.orb{width:220px}.fragment{font-size:.84rem}}
+  </style>
+</head>
+<body>
+  <div class="stars"></div>
+  <div class="shell">
+    <nav>
+      <div class="brand">Build Your Ghost</div>
+      <div class="nav-links">
+        <a href="../">首页</a>
+        <a href="../quiz/">你是什么鬼</a>
+        <a href="./">数字幽灵</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="card copy">
+        <div class="eyebrow">Digital Ghost Archive</div>
+        <h1>你的数字幽灵<span>每天一句话，慢慢成形</span></h1>
+        <p class="lead">把今天没说出口的话，交给这个白色光核。它会把你留下的每一句话，存成漂浮的记忆碎片。等很久以后再回头看，你会发现另一个自己已经在这里醒来。</p>
+        <div class="cta">
+          <a class="btn primary" href="#journal">留下今天的话</a>
+          <a class="btn secondary" href="../quiz/">先测测我是什么鬼</a>
+        </div>
+      </div>
+
+      <div class="card scene">
+        <div class="orb-wrap">
+          <div class="ring r1"></div>
+          <div class="ring r2"></div>
+          <div class="ring r3"></div>
+          <div class="orb"></div>
+        </div>
+        <div class="fragment f1">“今天其实很想躲起来，但还是把工作做完了。”</div>
+        <div class="fragment f2">“我希望有人记得我喜欢凌晨两点的风。”</div>
+        <div class="fragment f3">“假装没事的时候，我最像另一个人。”</div>
+        <div class="fragment f4">“等所有人忘记时，它也许还会记得。”</div>
+      </div>
+    </section>
+
+    <section class="card journal" id="journal">
+      <h2>今日留声</h2>
+      <p>先做一个轻量原型：你写下一句话，它会保存在本地浏览器里，并长成下面这些白色记忆纸片。</p>
+      <div class="input-row">
+        <input id="entryInput" maxlength="120" placeholder="例如：今天明明很累，但还是想再撑一下。" />
+        <button id="saveBtn">封存这一句</button>
+      </div>
+      <div class="notes" id="notes"></div>
+      <div class="foot">这些内容只保存在你当前浏览器里，像一只暂时寄居在本地的电子幽灵。</div>
+    </section>
+  </div>
+  <script>
+    const input=document.getElementById('entryInput');
+    const saveBtn=document.getElementById('saveBtn');
+    const notesEl=document.getElementById('notes');
+    const KEY='byg-memory-fragments';
+    const seed=[
+      '今天的我有点安静，但不是坏掉了。',
+      '如果未来的我看到这里，请别笑现在的脆弱。',
+      '我想被理解，但也有点怕真的被看穿。'
+    ];
+    function load(){
+      try{const raw=localStorage.getItem(KEY);return raw?JSON.parse(raw):seed}catch(e){return seed.slice()}
+    }
+    function save(list){localStorage.setItem(KEY,JSON.stringify(list.slice(0,9)))}
+    function render(){
+      const list=load();
+      notesEl.innerHTML=list.map((text,i)=>`<article class="note"><small>memory ${String(i+1).padStart(2,'0')}</small><span>${text.replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[m]||m))}</span></article>`).join('');
+    }
+    saveBtn.addEventListener('click',()=>{
+      const value=input.value.trim();
+      if(!value)return;
+      const list=[value,...load()];
+      save(list);
+      input.value='';
+      render();
+    });
+    input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();saveBtn.click()}});
+    render();
+  </script>
+</body>
+</html>
