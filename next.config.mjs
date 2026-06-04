@@ -1,15 +1,18 @@
-const repoName = '/build-your-ghost';
-const isProduction = process.env.NODE_ENV === 'production';
+import { PHASE_DEVELOPMENT_SERVER } from 'next/constants.js';
+
+const repoName = '/build-your-ghost1.0';
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  output: 'export',
-  images: {
-    unoptimized: true,
-  },
-  trailingSlash: true,
-  basePath: isProduction ? repoName : '',
-  assetPrefix: isProduction ? `${repoName}/` : undefined,
-};
+export default function nextConfig(phase) {
+  const isDev = phase === PHASE_DEVELOPMENT_SERVER;
 
-export default nextConfig;
+  return {
+    output: 'export',
+    images: {
+      unoptimized: true,
+    },
+    trailingSlash: true,
+    basePath: isDev ? '' : repoName,
+    assetPrefix: isDev ? undefined : `${repoName}/`,
+  };
+}
