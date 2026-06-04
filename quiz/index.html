@@ -107,7 +107,8 @@
             </div>
             <div class="quote">这只是今天的你。100天后，你会变成什么鬼？</div>
             <div class="result-actions">
-              <a class="btn primary" href="../">创建我的数字幽灵</a>
+              <a class="btn primary" href="../ghost/">创建我的数字幽灵</a>
+              <button class="btn secondary" id="copyBtn">复制鬼格文案</button>
               <button class="btn secondary" id="restartBtn">再测一次</button>
             </div>
             <div class="footer-note">把这页截下来发给朋友，他们大概率会觉得你本来就这样。</div>
@@ -163,6 +164,7 @@
     const resultView=document.getElementById('resultView');
     const startBtn=document.getElementById('startBtn');
     const restartBtn=document.getElementById('restartBtn');
+    const copyBtn=document.getElementById('copyBtn');
     const progressText=document.getElementById('progressText');
     const progressBar=document.getElementById('progressBar');
     const questionTag=document.getElementById('questionTag');
@@ -172,6 +174,7 @@
     const scoreKeys=['lazy','anxious','social','lonely','romantic','chaotic','ambitious','cyber','unlucky','funny','dark','rational'];
     let index=0;
     let score={};
+    let latestType='';
 
     function resetScore(){score={};scoreKeys.forEach(k=>score[k]=0)}
     function show(view){[introView,playView,resultView].forEach(v=>v.classList.remove('active'));view.classList.add('active');window.scrollTo({top:0,behavior:'instant'})}
@@ -230,11 +233,36 @@
       document.getElementById('resultVerdict').textContent=data.verdict;
       document.getElementById('resultOpener').textContent=data.opener;
       document.getElementById('resultKeywords').innerHTML=data.keywords.map(k=>`<span class="chip">${k}</span>`).join('');
+      latestType=type;
+      localStorage.setItem('build-your-ghost-last-quiz-result', JSON.stringify({
+        name:type,
+        headline:data.headline,
+        opening:data.opener
+      }));
       show(resultView);
     }
     function start(){index=0;resetScore();renderQuestion();show(playView)}
-    startBtn.addEventListener('click',start);
-    restartBtn.addEventListener('click',start);
+    async function copyResult(){
+      if(!latestType) return;
+      const data=results[latestType];
+      const text=[
+        `你是什么鬼？我的结果是：${latestType}`,
+        data.headline,
+        `性格分析：${data.analysis}`,
+        `灵魂关键词：${data.keywords.join(' / ')}`,
+        `地府评语：${data.verdict}`,
+        `适合我的 Build Your Ghost 开场白：${data.opener}`
+      ].join('\n');
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent='已复制，快去发朋友';
+      }catch(e){
+        copyBtn.textContent='复制失败，请手动截图';
+      }
+    }
+    startBtn.addEventListener('click',()=>{copyBtn.textContent='复制鬼格文案';start();});
+    restartBtn.addEventListener('click',()=>{copyBtn.textContent='复制鬼格文案';start();});
+    copyBtn.addEventListener('click',copyResult);
     resetScore();
   </script>
 </body>
