@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>你是什么鬼？ | Build Your Ghost</title>
+  <style>
+    :root{--bg:#050505;--panel:#101010;--line:rgba(255,255,255,.18);--line-strong:rgba(255,255,255,.32);--text:#f8f8f8;--muted:rgba(255,255,255,.72);--card:#f7f7f4;--ink:#111;--soft:rgba(255,255,255,.05)}
+    *{box-sizing:border-box}html,body{margin:0}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Segoe UI",sans-serif;background:radial-gradient(circle at top,#181818 0,#0d0d0d 34%,#050505 100%);color:var(--text);min-height:100vh;overflow-x:hidden}
+    a{text-decoration:none}
+    .page{position:relative;min-height:100vh;padding:24px 18px 40px;overflow:hidden}
+    .page:before,.page:after{content:"";position:fixed;pointer-events:none;border-radius:50%;filter:blur(18px);opacity:.8}.page:before{width:220px;height:220px;left:-30px;top:90px;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%)}.page:after{width:260px;height:260px;right:-20px;bottom:40px;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 70%)}
+    .stars,.stars:before,.stars:after{position:fixed;inset:0;content:"";pointer-events:none;background-image:radial-gradient(circle at 12% 22%,rgba(255,255,255,.8) 0 1px,transparent 1.5px),radial-gradient(circle at 78% 14%,rgba(255,255,255,.45) 0 1px,transparent 1.5px),radial-gradient(circle at 28% 72%,rgba(255,255,255,.5) 0 1px,transparent 1.5px),radial-gradient(circle at 88% 76%,rgba(255,255,255,.34) 0 1px,transparent 1.7px),radial-gradient(circle at 62% 46%,rgba(255,255,255,.26) 0 1px,transparent 1.5px)}.stars:before{opacity:.45;transform:scale(1.1)}.stars:after{opacity:.28;transform:scale(.92)}
+    .paper,.paper:before,.paper:after{position:fixed;pointer-events:none;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.18)}.paper{width:74px;height:88px;left:8%;top:23%;transform:rotate(-9deg);animation:float 6.6s ease-in-out infinite}.paper:before{content:"";width:58px;height:70px;left:auto;right:-42px;top:210px;transform:rotate(11deg);animation:float 5.7s ease-in-out infinite}.paper:after{content:"";width:68px;height:82px;left:calc(100vw - 170px);top:90px;transform:rotate(8deg);animation:float 7.2s ease-in-out infinite}
+    .flame,.moon,.grave{position:fixed;pointer-events:none}.flame{width:22px;height:32px;right:10%;top:52%;background:radial-gradient(circle at 50% 28%,rgba(255,255,255,.98) 0 15%,rgba(255,255,255,.58) 32%,rgba(255,255,255,.14) 62%,transparent 68%);filter:blur(.3px);animation:flicker 2.4s ease-in-out infinite}.moon{width:88px;height:88px;right:9%;top:12%;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fff 0 24%,rgba(255,255,255,.3) 62%,transparent 70%);box-shadow:0 0 40px rgba(255,255,255,.1)}.grave{left:6%;bottom:9%;width:68px;height:88px;border-radius:32px 32px 12px 12px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.12)}.grave:before,.grave:after{content:"";position:absolute;background:rgba(255,255,255,.3)}.grave:before{width:2px;height:22px;left:50%;top:18px;transform:translateX(-50%)}.grave:after{width:18px;height:2px;left:50%;top:28px;transform:translateX(-50%)}
+    .shell{position:relative;z-index:1;max-width:980px;margin:0 auto}
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:20px}.brand{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}.links{display:flex;gap:10px;flex-wrap:wrap}.links a{color:#fff;padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:rgba(255,255,255,.04)}
+    .view{display:none}.view.active{display:block}.card{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:30px;backdrop-filter:blur(18px);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+    .intro{max-width:760px;margin:40px auto 0;padding:34px 28px 30px;text-align:center}.ghost{width:150px;height:150px;margin:0 auto 20px;border-radius:50%;background:radial-gradient(circle at 38% 34%,#fff 0 18%,rgba(255,255,255,.95) 28%,rgba(255,255,255,.42) 55%,rgba(255,255,255,.08) 74%,transparent 78%);box-shadow:0 0 56px rgba(255,255,255,.2),0 0 140px rgba(255,255,255,.12);position:relative;animation:breathe 4.8s ease-in-out infinite}.ghost:before,.ghost:after{content:"";position:absolute;top:53px;width:12px;height:18px;border-radius:50%;background:#101010}.ghost:before{left:49px}.ghost:after{right:49px}.ghost i{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);width:114px;height:46px;border-radius:0 0 36px 36px;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.64));clip-path:polygon(0 0,100% 0,100% 68%,87% 100%,68% 72%,50% 100%,33% 72%,14% 100%,0 68%)}
+    h1{margin:0;font-size:clamp(2.5rem,7vw,4.8rem);line-height:1}.sub{max-width:35rem;margin:16px auto 0;font-size:1.05rem;line-height:1.8;color:rgba(255,255,255,.8)}.hint{margin-top:20px;color:rgba(255,255,255,.6);font-size:.96rem}.btn-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{border:0;border-radius:999px;padding:15px 24px;font-size:1rem;font-weight:800;cursor:pointer;transition:.24s ease}.btn.primary{background:#fff;color:#050505;box-shadow:0 0 28px rgba(255,255,255,.14)}.btn.secondary{background:rgba(255,255,255,.05);color:#fff;border:1px solid var(--line)}.btn:hover{transform:translateY(-2px)}
+    .question-wrap{max-width:760px;margin:18px auto 0}.status{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;color:var(--muted)}.progress{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}.bar{height:100%;width:0;background:linear-gradient(90deg,#fff,rgba(255,255,255,.48));border-radius:999px;transition:width .35s ease}
+    .question-card{padding:28px;background:var(--card);color:var(--ink);border-radius:30px;border:1px solid rgba(255,255,255,.16);box-shadow:0 24px 80px rgba(0,0,0,.35)}.tag{display:inline-block;padding:8px 12px;border-radius:999px;border:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.04);font-size:.84rem;letter-spacing:.08em;text-transform:uppercase;color:rgba(0,0,0,.56)}.question-card h2{margin:18px 0 22px;font-size:clamp(1.6rem,4vw,2.3rem);line-height:1.35}
+    .options{display:grid;gap:12px}.option{width:100%;text-align:left;border-radius:22px;border:1px solid rgba(0,0,0,.12);background:#fff;color:#111;padding:18px 18px 18px 20px;font-size:1rem;line-height:1.6;cursor:pointer;transition:.22s ease;box-shadow:0 10px 24px rgba(17,17,17,.05)}.option:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(17,17,17,.12),0 0 24px rgba(255,255,255,.28)}
+    .result{max-width:860px;margin:18px auto 0}.result-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;color:var(--muted)}.poster{padding:28px;border-radius:34px;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));border:1px solid var(--line-strong);box-shadow:0 28px 100px rgba(0,0,0,.55);position:relative;overflow:hidden}.poster:before{content:"";position:absolute;inset:auto auto -80px -40px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 72%)}.poster:after{content:"";position:absolute;right:-20px;top:-40px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12),transparent 72%)}
+    .result-head{display:flex;gap:18px;align-items:center;flex-wrap:wrap}.seal{width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#fff 0 22%,rgba(255,255,255,.86) 34%,rgba(255,255,255,.18) 64%,transparent 70%);box-shadow:0 0 48px rgba(255,255,255,.14)}.seal span{font-size:2rem}.result-copy h2{margin:0;font-size:clamp(2rem,5vw,3.4rem);line-height:1.02}.result-copy p{margin:10px 0 0;color:rgba(255,255,255,.82);line-height:1.75}
+    .section{margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12)}.section h3{margin:0 0 10px;font-size:1rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.62)}.section p{margin:0;color:#f6f6f6;line-height:1.9}.chips{display:flex;gap:10px;flex-wrap:wrap}.chip{padding:10px 14px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:#fff}.result-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}.quote{margin-top:16px;color:rgba(255,255,255,.7);font-size:1rem}
+    .footer-note{margin-top:18px;color:rgba(255,255,255,.58);font-size:.95rem}
+    @keyframes breathe{0%,100%{transform:scale(.96);opacity:.92}50%{transform:scale(1.04);opacity:1}}@keyframes float{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-11px) rotate(1deg)}}@keyframes flicker{0%,100%{transform:translateY(0) scale(1);opacity:.78}50%{transform:translateY(-5px) scale(1.08,.94);opacity:1}}
+    @media (max-width: 720px){.nav{flex-direction:column;align-items:flex-start}.intro{margin-top:18px;padding:24px 20px}.question-card{padding:22px}.poster{padding:22px}.result-head{align-items:flex-start}.seal{width:92px;height:92px}.btn{width:100%}.btn-row,.result-actions{flex-direction:column}.paper,.paper:before,.paper:after,.grave,.moon,.flame{display:none}}
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="stars"></div>
+    <div class="paper"></div>
+    <div class="moon"></div>
+    <div class="flame"></div>
+    <div class="grave"></div>
+
+    <div class="shell">
+      <div class="nav">
+        <div class="brand">Ghost Personality Test</div>
+        <div class="links">
+          <a href="../">Build Your Ghost</a>
+          <a href="./">你是什么鬼</a>
+          <a href="../ghost/">数字幽灵</a>
+        </div>
+      </div>
+
+      <section id="introView" class="view active">
+        <div class="card intro">
+          <div class="ghost"><i></i></div>
+          <h1>你是什么鬼？</h1>
+          <p class="sub">一个黑白版 MBTI 式人格测试，看看你的灵魂到底属于哪种鬼。题目都是生活场景，不学术，不正经，但很容易把你照出来。</p>
+          <div class="btn-row">
+            <button class="btn primary" id="startBtn">开始测试</button>
+            <a class="btn secondary" href="../">先看看 Build Your Ghost</a>
+          </div>
+          <div class="hint">测完后，你可以继续创建自己的数字幽灵 Build Your Ghost。</div>
+        </div>
+      </section>
+
+      <section id="playView" class="view">
+        <div class="question-wrap">
+          <div class="status">
+            <div id="progressText">1 / 16</div>
+            <div>黑白地府人格测试</div>
+          </div>
+          <div class="progress"><div class="bar" id="progressBar"></div></div>
+          <div class="question-card" style="margin-top:14px">
+            <span class="tag" id="questionTag">魂魄档案 01</span>
+            <h2 id="questionTitle"></h2>
+            <div class="options" id="options"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="resultView" class="view">
+        <div class="result">
+          <div class="result-top">
+            <div>你的今日鬼格报告</div>
+            <div>建议截图保存</div>
+          </div>
+          <div class="poster">
+            <div class="result-head">
+              <div class="seal"><span id="resultEmoji">👻</span></div>
+              <div class="result-copy">
+                <h2 id="resultName"></h2>
+                <p id="resultHeadline"></p>
+              </div>
+            </div>
+            <div class="section">
+              <h3>性格分析</h3>
+              <p id="resultAnalysis"></p>
+            </div>
+            <div class="section">
+              <h3>灵魂关键词</h3>
+              <div class="chips" id="resultKeywords"></div>
+            </div>
+            <div class="section">
+              <h3>地府评语</h3>
+              <p id="resultVerdict"></p>
+            </div>
+            <div class="section">
+              <h3>适合你的 Build Your Ghost 开场白</h3>
+              <p id="resultOpener"></p>
+            </div>
+            <div class="quote">这只是今天的你。100天后，你会变成什么鬼？</div>
+            <div class="result-actions">
+              <a class="btn primary" href="../">创建我的数字幽灵</a>
+              <button class="btn secondary" id="restartBtn">再测一次</button>
+            </div>
+            <div class="footer-note">把这页截下来发给朋友，他们大概率会觉得你本来就这样。</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const questions=[
+      {q:'周末突然空出来一天，你最想怎么过？',o:[['拉窗帘，一边躺一边失联',{lazy:3,lonely:1}],['出去乱逛，看能不能碰到一点新鲜事',{social:2,funny:1,chaotic:1}],['想把想做的事列个表，一口气处理掉',{ambitious:2,rational:2}],['开着电脑和耳机，掉进自己的赛博小世界',{cyber:3,lonely:1}]]},
+      {q:'朋友很久没回消息，你第一反应是什么？',o:[['完了，我是不是说错话了',{anxious:3,romantic:1}],['先嘴硬，说不回最好，我也懒得理',{lazy:1,dark:2}],['算了，可能对方只是在忙',{rational:3}],['开始脑补八百种剧情，越想越离谱',{chaotic:2,funny:1,anxious:1}]]},
+      {q:'深夜睡不着时，你脑子里最多出现什么？',o:[['人生怎么还没突然变好',{lonely:2,dark:2}],['一些旧事，越想越细节',{romantic:2,anxious:2}],['灵感、计划、还没完成的事',{ambitious:2,cyber:1,rational:1}],['一些很怪但很好笑的念头',{funny:2,chaotic:2}]]},
+      {q:'面对一个新机会，你通常会？',o:[['先兴奋，后面再说',{chaotic:2,social:1,ambitious:1}],['先害怕，先想退路',{anxious:3,rational:1}],['先评估值不值得',{rational:3,ambitious:1}],['如果太麻烦，我可能装没看见',{lazy:2,unlucky:1}]]},
+      {q:'如果可以留一句话给未来的自己，你更像会写？',o:[['希望你已经没那么累了',{lonely:2,romantic:1}],['别装了，你明明很想赢',{ambitious:3,dark:1}],['记得睡觉，别又熬到天亮',{cyber:1,anxious:1,lazy:1}],['哈哈，别把自己活成一个笑话',{funny:2,dark:1,chaotic:1}]]},
+      {q:'你在群里最常见的状态是？',o:[['潜水，像没这个人',{lonely:3,lazy:1}],['偶尔突然出现，丢个梗就跑',{funny:2,chaotic:1,social:1}],['负责把话题拉回正轨',{rational:3,social:1}],['深夜时段突然很活跃',{cyber:2,chaotic:1,dark:1}]]},
+      {q:'当你压力很大时，更容易变成？',o:[['一团烂泥，什么都不想动',{lazy:3}],['看起来正常，其实心里已经闹鬼',{anxious:2,dark:2}],['越忙越上头，停不下来',{ambitious:3,chaotic:1}],['开始疯狂刷点什么麻痹自己',{cyber:2,lonely:1,lazy:1}]]},
+      {q:'别人夸你，你更可能怎么接？',o:[['表面谦虚，心里偷偷爽',{funny:1,social:1,romantic:1}],['第一反应是不信，觉得是客套',{anxious:2,dark:1}],['谢谢，我知道我做得还不错',{rational:1,ambitious:2}],['转头开始演，越夸越来劲',{social:2,funny:2}]]},
+      {q:'看到喜欢的人发动态，你通常会？',o:[['立刻点开，逐字解读',{romantic:3,anxious:1}],['假装不在意，其实会反复看',{romantic:2,dark:1,lonely:1}],['顺手回个轻松的话题试探',{social:2,funny:1,rational:1}],['看完就算，喜欢归喜欢，生活归生活',{rational:2,lonely:1}]]},
+      {q:'如果你在地府有一份差事，你更像？',o:[['坐在角落记账，谁都别来烦我',{rational:2,lonely:2}],['半夜巡逻，气场阴但很稳',{dark:3,ambitious:1}],['负责接待和安抚新鬼',{social:2,romantic:1,funny:1}],['摸鱼打卡，能拖就拖',{lazy:3,funny:1}]]},
+      {q:'你和“倒霉”两个字的关系更像？',o:[['偶尔沾一点，但还能笑出来',{unlucky:2,funny:1}],['经常精准踩雷，已经习惯了',{unlucky:3,dark:1}],['我会尽量把坑绕过去',{rational:2}],['我不是倒霉，我只是爱乱冲',{chaotic:2,unlucky:1}]]},
+      {q:'你最容易被哪种内容吸走注意力？',o:[['情绪化的字句和深夜文案',{romantic:2,lonely:1,dark:1}],['奇怪知识、论坛、AI、神秘角落',{cyber:3,rational:1}],['热闹八卦和人类观察',{social:2,funny:2}],['短视频，一刷就一小时没了',{lazy:2,chaotic:1}]]},
+      {q:'你做决定时更依赖？',o:[['当下感觉，对就是对',{chaotic:2,romantic:1}],['利弊分析，别让自己后悔',{rational:3}],['别人反应，我会很在意',{social:1,anxious:2,romantic:1}],['命运吧，反正我也常常乱选',{unlucky:2,funny:1,dark:1}]]},
+      {q:'别人眼里的你，最可能是哪一种？',o:[['看着懒，其实脑子里戏很多',{lazy:2,funny:1,lonely:1}],['看着乖，其实偶尔很阴',{dark:2,rational:1}],['看着疯，其实挺会拿捏场面',{chaotic:2,social:1,funny:1}],['看着冷，其实只是经常掉线',{cyber:2,lonely:2}]]},
+      {q:'凌晨两点还醒着时，你更像在做什么？',o:[['跟世界断联，躺着发呆',{lonely:2,lazy:2}],['刷屏到天亮，完全忘记时间',{cyber:3,chaotic:1}],['突然开始认真规划人生',{ambitious:2,rational:2}],['给人发一些平时不敢发的话',{romantic:2,anxious:1,dark:1}]]},
+      {q:'如果今天必须给自己一个标签，你会选？',o:[['先活着鬼',{lazy:2,dark:1}],['别惹我鬼',{dark:2,ambitious:1}],['其实很好笑鬼',{funny:3,social:1}],['互联网附体鬼',{cyber:3,lonely:1}]]}
+    ];
+
+    const results={
+      '摆烂鬼':{emoji:'🛌',headline:'你不是没情绪，你只是习惯先把自己横着放。',analysis:'你很懂得从世界的噪音里撤退，也很擅长在“先这样吧”里给自己留一口气。你不是彻底放弃，而是常常在耗尽之前先暂停，所以别人看你像摆烂，其实你只是太懂疲惫。',keywords:['先缓一下','失联自保','低电量生存'],verdict:'地府记录：此魂魄行动力随机刷新，但情绪感知极敏锐，建议少逼自己，多续命。',opener:'今天我没做成什么大事，但我还是想把这一天记下来。'},
+      '熬夜鬼':{emoji:'🌙',headline:'白天在人间营业，晚上才真正开始活。',analysis:'你的脑子在夜里尤其清醒，灵感、情绪、野心和不安都会一起冒头。你一边知道该睡了，一边又觉得凌晨才像真正属于自己的时间。',keywords:['夜间清醒','情绪加倍','灵魂晚班'],verdict:'地府评估：夜巡型魂体，适合在寂静时段发光，但需防止把自己烧空。',opener:'现在是很晚的时候，但我想留下这一句，证明我今晚确实活过。'},
+      '胆小鬼':{emoji:'😶‍🌫️',headline:'你不是弱，只是总比别人先看到风险。',analysis:'你对氛围、变化和人心都很敏感，所以很多人还没察觉的事，你已经开始担心了。你会提前紧张，也会提前防御，但这份谨慎有时也正是你保护自己的方式。',keywords:['高敏雷达','提前紧张','谨慎求生'],verdict:'地府批注：此魂魄惊惧值偏高，但逃生本能优秀，建议减少自我惊吓。',opener:'今天我又担心了很多，但我想把真实的害怕留下来。'},
+      '黑无常':{emoji:'⚫',headline:'你安静、冷一点，但很多时候最稳的也是你。',analysis:'你身上有种不必多说的压场感。情绪不一定外露，温柔也不一定张扬，但你做事有自己的分寸，别人乱的时候，你常常是那个还能站稳的人。',keywords:['冷静气场','暗色稳定','边界感强'],verdict:'地府公函：此魂魄适合夜行执事，气场阴冷但办事靠谱，可托付。',opener:'今天我看起来很平静，但心里其实有几件事还在回响。'},
+      '白无常':{emoji:'⚪',headline:'你像一盏白灯，柔和，但并不软弱。',analysis:'你通常能顾到别人，也懂得在混乱里把气氛拉回可交流的状态。你不一定是最闹的那个，但你往往能让人安心，像地府里那种看着温和、实际很能镇场的人。',keywords:['柔和可靠','人际缓冲','会接住人'],verdict:'地府回执：此魂魄亲和度高，适合接引与安抚，但也别总忘了照顾自己。',opener:'今天我对别人说了很多话，但也想留下只属于我自己的这一句。'},
+      '牛头':{emoji:'🐂',headline:'你身上有股硬劲，不一定张扬，但很难被轻易推倒。',analysis:'你认准的事会悄悄往前拱，表面看着平静，实际上耐力和压强都很高。你不一定总说要赢，但你骨子里并不服输。',keywords:['硬核推进','沉默执行','不太服输'],verdict:'地府评议：此魂魄适合扛事，抗压值高，行动略带执拗，整体可用。',opener:'今天我还是往前拱了一点，哪怕只有一点。'},
+      '马面':{emoji:'🐎',headline:'你跑得比情绪快，也常常比别人更早到达下一步。',analysis:'你做事讲效率，也很少愿意一直停在同一个地方。遇到问题，你会本能地想办法、找路径、拉进度，所以你给人的感觉常常是清醒、利落、很能推进。',keywords:['推进感','效率控','向前驱动'],verdict:'地府档案：此魂魄行动路径清晰，适合赶路与赶命，慎防过度消耗。',opener:'今天我又往下一步走了，不管别人有没有看见。'},
+      '吊死鬼':{emoji:'🪢',headline:'你的情绪和脑洞都有点悬空，但也因此很有戏。',analysis:'你容易在极端里感受世界，偶尔会把一件小事脑补成一个完整宇宙。你有点疯感，也有点诗意，外人未必都懂，但你的灵魂确实比一般人更会乱飞。',keywords:['悬空脑洞','戏剧张力','情绪翻涌'],verdict:'地府提示：此魂魄想象力过盛，需定期落地，否则容易把自己吓得更高。',opener:'今天我的脑子又飘远了，但我想把它抓回来留一句。'},
+      '孤魂野鬼':{emoji:'🍃',headline:'你习惯一个人走神，也习惯一个人消化。',analysis:'你不是不需要人，只是很多时候更擅长独自处理情绪。你有很强的内在世界，也有一种轻微游离感，像永远比现场慢半拍，却比别人更能记住那些没被说出口的部分。',keywords:['独自消化','游离感','记忆留痕'],verdict:'地府记录：此魂魄常在边缘徘徊，孤独值偏高，但感知力极其细腻。',opener:'今天我又有点像游魂，但还是想让这句话留下来。'},
+      '色鬼':{emoji:'💘',headline:'你的人生不一定缺逻辑，但经常先被心动牵走。',analysis:'你对人有感觉，也对氛围有反应。你会观察、想象、投入，也会被一点点暧昧和浪漫迅速牵动。你不是轻浮，你只是比很多人更容易被情绪点亮。',keywords:['容易心动','氛围感应','感情先行'],verdict:'地府评语：此魂魄恋慕值偏高，容易被眼神和语气超度，建议谨慎投喂。',opener:'今天我又因为某个人、某句话，心里轻轻晃了一下。'},
+      '酒鬼':{emoji:'🍶',headline:'你有种微醺式活法，清醒里总混着一点放任。',analysis:'你不是时时刻刻都失控，但你身上有股“算了，先活开心一点”的松动感。情绪上来时，你容易顺着气氛走，也容易被夜晚、朋友、热闹或寂寞带偏。',keywords:['微醺气质','气氛驱动','情绪顺流'],verdict:'地府小结：此魂魄易受夜色与人情影响，开心时很亮，低落时也容易更深。',opener:'今天我有点像喝多了情绪，所以想先把这一句放下来。'},
+      '倒霉鬼':{emoji:'☔',headline:'命运偶尔针对你，但你居然还挺能扛。',analysis:'你很懂“怎么又是我”的感受，也可能真的常常踩到一些离谱的小坑。但你并不是纯惨，你身上还有一种越倒霉越能苦中作乐的生存天赋。',keywords:['踩坑体质','苦中作乐','意外不断'],verdict:'地府认证：此魂魄霉运附着率略高，但恢复力尚可，建议继续边骂边活。',opener:'今天又有点倒霉，不过我想把它记下来，免得以后忘了笑。'},
+      '机灵鬼':{emoji:'🪄',headline:'你会看气氛，也会转弯，总能找到一点巧劲。',analysis:'你脑子转得快，知道什么时候该认真，什么时候该轻巧带过。你不一定最卷，但你通常有办法，不爱硬碰硬，擅长用聪明的小动作让自己活得顺一点。',keywords:['会转弯','巧劲选手','脑子灵'],verdict:'地府回函：此魂魄机巧值高，适合出谋划策，也容易把别人绕进去。',opener:'今天我又靠一点小聪明让自己过关了。'},
+      '恋爱脑鬼':{emoji:'🫀',headline:'你明知道不该上头，但心还是会先跑出去。',analysis:'你对情绪关系投入得深，喜欢时很真，失落时也很真。你会反复想、反复猜，也会为一点回应开心很久。你不是没有理智，只是感情一来，理智常常得排队。',keywords:['上头体质','情绪投入','回应敏感'],verdict:'地府备注：此魂魄感情流量过高，建议把一点爱分给自己，防止系统过载。',opener:'今天我又被一点点回应影响了很久，但这也是真的我。'},
+      '摸鱼鬼':{emoji:'🐟',headline:'你很会在世界的缝里偷回一点自己的时间。',analysis:'你不是完全不做事，而是对无意义的消耗有天然抵抗。你知道怎么躲开一点压力，也知道怎么给自己留出喘口气的小出口，所以你常常像一只看似散漫、实则很懂活法的鬼。',keywords:['缝隙求生','自带偷闲','省电模式'],verdict:'地府批示：此魂魄摸鱼技术熟练，建议保留此天赋，但别摸着摸着把自己摸丢了。',opener:'今天我又偷回了一小段自己的时间，这句想替它做个纪念。'},
+      '发疯鬼':{emoji:'⚡',headline:'你不是稳定型人格，你是偶尔会炸出火花的那种。',analysis:'你有情绪、也有冲劲，很多时候不是不想稳，而是你整个人本来就带一点高频率。你会突然很燃、很想冲、很想表达，别人看你像发疯，其实你只是活得比较不收敛。',keywords:['高频率','说来就来','情绪电流'],verdict:'地府提示：此魂魄能量峰值偏高，发作时颇具观赏性，建议注意续航。',opener:'今天我又有点想发疯，所以先把这股电流留在这里。'},
+      '显眼包鬼':{emoji:'🎭',headline:'你走到哪儿都容易留下存在感，哪怕只是说一句话。',analysis:'你有表达欲，也有幽默感，知道怎么让场子活起来。你未必时时都想当主角，但你真的很难完全没存在感，因为你天然会给周围带来一点戏和亮点。',keywords:['存在感','会整活','热闹发动机'],verdict:'地府公报：此魂魄显眼值过高，出场易被围观，建议合理使用个人光效。',opener:'今天我又在某个场合留下了痕迹，想把这一句也一起存起来。'},
+      '赛博鬼':{emoji:'💻',headline:'你的灵魂有一半住在现实，另一半常年在线。',analysis:'你擅长在屏幕、信息、深夜和碎片化世界里生活。互联网不是你的工具，而更像你的第二层皮肤。你会在虚拟空间里思考、感受、逃避，也会在那里留下最像自己的痕迹。',keywords:['网络栖居','屏幕灵魂','电子回声'],verdict:'地府报告：此魂魄数字附着度极高，适合长期寄居于记忆星图与电子废墟。',opener:'今天我又在屏幕里活了很久，但我想留下一句更像我的话。'}
+    };
+
+    const introView=document.getElementById('introView');
+    const playView=document.getElementById('playView');
+    const resultView=document.getElementById('resultView');
+    const startBtn=document.getElementById('startBtn');
+    const restartBtn=document.getElementById('restartBtn');
+    const progressText=document.getElementById('progressText');
+    const progressBar=document.getElementById('progressBar');
+    const questionTag=document.getElementById('questionTag');
+    const questionTitle=document.getElementById('questionTitle');
+    const optionsEl=document.getElementById('options');
+
+    const scoreKeys=['lazy','anxious','social','lonely','romantic','chaotic','ambitious','cyber','unlucky','funny','dark','rational'];
+    let index=0;
+    let score={};
+
+    function resetScore(){score={};scoreKeys.forEach(k=>score[k]=0)}
+    function show(view){[introView,playView,resultView].forEach(v=>v.classList.remove('active'));view.classList.add('active');window.scrollTo({top:0,behavior:'instant'})}
+    function renderQuestion(){
+      const item=questions[index];
+      progressText.textContent=`${index+1} / ${questions.length}`;
+      progressBar.style.width=`${((index+1)/questions.length)*100}%`;
+      questionTag.textContent=`魂魄档案 ${String(index+1).padStart(2,'0')}`;
+      questionTitle.textContent=item.q;
+      optionsEl.innerHTML='';
+      item.o.forEach(([text,delta])=>{
+        const btn=document.createElement('button');
+        btn.className='option';
+        btn.textContent=text;
+        btn.onclick=()=>answer(delta);
+        optionsEl.appendChild(btn);
+      });
+    }
+    function answer(delta){
+      Object.keys(delta).forEach(k=>score[k]=(score[k]||0)+delta[k]);
+      index+=1;
+      if(index<questions.length){renderQuestion()}else{renderResult()}
+    }
+    function topTags(){return Object.entries(score).sort((a,b)=>b[1]-a[1]).map(x=>x[0])}
+    function pickResult(){
+      const tags=topTags();
+      const [a,b,c]=tags;
+      if(a==='cyber') return '赛博鬼';
+      if(a==='romantic'&&b==='anxious') return '恋爱脑鬼';
+      if(a==='romantic') return '色鬼';
+      if(a==='dark'&&b==='rational') return '黑无常';
+      if(a==='rational'&&b==='social') return '白无常';
+      if(a==='ambitious'&&b==='dark') return '牛头';
+      if(a==='ambitious'&&b==='rational') return '马面';
+      if(a==='anxious'&&b==='dark') return '胆小鬼';
+      if(a==='unlucky') return '倒霉鬼';
+      if(a==='funny'&&b==='social') return '显眼包鬼';
+      if(a==='funny'&&b==='rational') return '机灵鬼';
+      if(a==='chaotic'&&b==='funny') return '发疯鬼';
+      if(a==='chaotic'&&b==='dark') return '吊死鬼';
+      if(a==='lonely'&&b==='anxious') return '孤魂野鬼';
+      if(a==='lazy'&&b==='funny') return '摸鱼鬼';
+      if(a==='lazy'&&b==='dark') return '摆烂鬼';
+      if(a==='dark'&&b==='social') return '酒鬼';
+      if(a==='ambitious') return '熬夜鬼';
+      if(a==='lonely') return '孤魂野鬼';
+      return '摆烂鬼';
+    }
+    function renderResult(){
+      const type=pickResult();
+      const data=results[type];
+      document.getElementById('resultEmoji').textContent=data.emoji;
+      document.getElementById('resultName').textContent=`你是：${type}`;
+      document.getElementById('resultHeadline').textContent=data.headline;
+      document.getElementById('resultAnalysis').textContent=data.analysis;
+      document.getElementById('resultVerdict').textContent=data.verdict;
+      document.getElementById('resultOpener').textContent=data.opener;
+      document.getElementById('resultKeywords').innerHTML=data.keywords.map(k=>`<span class="chip">${k}</span>`).join('');
+      show(resultView);
+    }
+    function start(){index=0;resetScore();renderQuestion();show(playView)}
+    startBtn.addEventListener('click',start);
+    restartBtn.addEventListener('click',start);
+    resetScore();
+  </script>
+</body>
+</html>
